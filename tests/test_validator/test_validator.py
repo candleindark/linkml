@@ -89,8 +89,8 @@ def test_iter_results_invalid_instance():
     plugins = [AcceptNothingValidationPlugin(2)]
     validator = Validator(SCHEMA, plugins)
     results = validator.iter_results({"foo": "bar"})
-    assert "0" in next(results).message
-    assert "1" in next(results).message
+    assert "0" in next(results).result.message
+    assert "1" in next(results).result.message
     with pytest.raises(StopIteration):
         next(results)
 
