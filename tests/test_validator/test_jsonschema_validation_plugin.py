@@ -35,7 +35,7 @@ def test_invalid_instance_closed(validation_context):
         "whoops": "my bad",
     }
     result_iter = plugin.process(instance, validation_context)
-    message = next(result_iter).message
+    message = next(result_iter).result.message
     assert "Additional properties" in message
     assert "whoops" in message
     with pytest.raises(StopIteration):
