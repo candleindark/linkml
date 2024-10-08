@@ -22,7 +22,7 @@ def test_invalid_instance(validation_context):
     plugin = JsonschemaValidationPlugin()
     instance = {"id": "1", "full_name": "Person One", "phone": "555-CALL-NOW"}
     result_iter = plugin.process(instance, validation_context)
-    assert "'555-CALL-NOW' does not match" in next(result_iter).message
+    assert "'555-CALL-NOW' does not match" in next(result_iter).result.message
     with pytest.raises(StopIteration):
         next(result_iter)
 
