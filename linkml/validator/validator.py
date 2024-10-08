@@ -8,6 +8,7 @@ from linkml_runtime.loaders import yaml_loader
 from linkml.validator.loaders import Loader
 from linkml.validator.loaders.passthrough_loader import PassthroughLoader
 from linkml.validator.plugins import ValidationPlugin
+from linkml.validator.plugins.validation_plugin import ValidationResultWithSource
 from linkml.validator.report import Severity, ValidationReport, ValidationResult
 from linkml.validator.validation_context import ValidationContext
 
@@ -82,7 +83,7 @@ class Validator:
 
     def iter_results_from_source(
         self, loader: Loader, target_class: Optional[str] = None
-    ) -> Iterator[ValidationResult]:
+    ) -> Iterator[ValidationResultWithSource]:
         """Lazily yield validation results for the instances provided by a loader
 
         :param loader: An instance of a subclass of :class:`linkml.validator.loaders.Loader`
@@ -91,7 +92,7 @@ class Validator:
             against. If ``None``, the class will be inferred from the schema by
             looked for a class with ``tree_root: true``. Defaults to ``None``.
         :return: Iterator over validation results
-        :rtype: Iterator[ValidationResult]
+        :rtype: Iterator[ValidationResultWithSource]
         """
         if not self._validation_plugins:
             return []
@@ -105,9 +106,11 @@ class Validator:
         for index, instance in enumerate(loader.iter_instances()):
             for plugin in self._validation_plugins:
                 for result in plugin.process(instance, context):
-                    if result.severity == Severity.FATAL or (self.strict and result.severity == Severity.ERROR):
+                    if result.result.severity == Severity.FATAL or (
+                        self.strict and result.result.severity == Severity.ERROR
+                    ):
                         has_failure = True
-                    result.instance_index = index
+                    result.result.instance_index = index
                     yield result
                     if has_failure:
                         break
