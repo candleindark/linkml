@@ -3,6 +3,8 @@ from typing import Any, List, Optional
 
 from pydantic import BaseModel
 
+from linkml.validator.plugins.validation_plugin import ValidationResultWithSource
+
 
 class Severity(str, Enum):
     """
@@ -38,4 +40,4 @@ class ValidationReport(BaseModel):
     A report object.
     """
 
-    results: List[ValidationResult]
+    results: List[ValidationResultWithSource]
