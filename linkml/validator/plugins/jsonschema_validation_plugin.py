@@ -3,7 +3,7 @@ from typing import Any, Iterator, Optional
 
 from jsonschema.exceptions import best_match
 
-from linkml.validator.plugins.validation_plugin import ValidationPlugin
+from linkml.validator.plugins.validation_plugin import ValidationPlugin, ValidationResultWithSource
 from linkml.validator.report import Severity, ValidationResult
 from linkml.validator.validation_context import ValidationContext
 
@@ -32,13 +32,13 @@ class JsonschemaValidationPlugin(ValidationPlugin):
         self.include_range_class_descendants = include_range_class_descendants
         self.json_schema_path = json_schema_path
 
-    def process(self, instance: Any, context: ValidationContext) -> Iterator[ValidationResult]:
+    def process(self, instance: Any, context: ValidationContext) -> Iterator[ValidationResultWithSource]:
         """Perform JSON Schema validation on the provided instance
 
         :param instance: The instance to validate
         :param context: The validation context which provides a JSON Schema artifact
         :return: Iterator over validation results
-        :rtype: Iterator[ValidationResult]
+        :rtype: Iterator[ValidationResultWithSource]
         """
         validator = context.json_schema_validator(
             closed=self.closed,
@@ -48,11 +48,14 @@ class JsonschemaValidationPlugin(ValidationPlugin):
         for error in validator.iter_errors(instance):
             error_context = [ctx.message for ctx in error.context]
             best_error = best_match([error])
-            yield ValidationResult(
-                type="jsonschema validation",
-                severity=Severity.ERROR,
-                instance=instance,
-                instantiates=context.target_class,
-                message=f"{best_error.message} in /{'/'.join(str(p) for p in best_error.absolute_path)}",
-                context=error_context,
+            yield ValidationResultWithSource(
+                ValidationResult(
+                    type="jsonschema validation",
+                    severity=Severity.ERROR,
+                    instance=instance,
+                    instantiates=context.target_class,
+                    message=f"{best_error.message} in /{'/'.join(str(p) for p in best_error.absolute_path)}",
+                    context=error_context,
+                ),
+                best_error,
             )
