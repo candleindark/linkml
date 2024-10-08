@@ -100,7 +100,7 @@ def test_provides_default_target_class_in_context():
     validator = Validator(SCHEMA, plugins)
     results = validator.iter_results({"foo": "bar"})
     result = next(results)
-    assert result.instantiates == "TreeRoot"
+    assert result.result.instantiates == "TreeRoot"
 
 
 def test_provides_custom_target_class_in_context():
