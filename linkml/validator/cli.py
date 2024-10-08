@@ -192,10 +192,13 @@ def cli(
     severity_counter = Counter()
     for loader in loaders:
         for result in validator.iter_results_from_source(loader, config.target_class):
-            severity_counter[result.severity] += 1
-            click.echo(f"[{result.severity.value}] [{loader.source}/{result.instance_index}] {result.message}")
+            severity_counter[result.result.severity] += 1
+            click.echo(
+                f"[{result.result.severity.value}] "
+                f"[{loader.source}/{result.result.instance_index}] {result.result.message}"
+            )
             if include_context:
-                for ctx in result.context:
+                for ctx in result.result.context:
                     click.echo(f"[CONTEXT] {ctx}")
 
     if sum(severity_counter.values()) == 0:
