@@ -109,7 +109,7 @@ def test_provides_custom_target_class_in_context():
     target_class = "OtherClass"
     results = validator.iter_results({"foo": "bar"}, target_class)
     result = next(results)
-    assert result.instantiates == target_class
+    assert result.result.instantiates == target_class
 
 
 def test_error_on_missing_target_class():
