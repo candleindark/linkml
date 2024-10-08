@@ -1,8 +1,13 @@
 from abc import ABC, abstractmethod
-from typing import Iterator
+from typing import Any, Iterator, NamedTuple
 
 from linkml.validator.report import ValidationResult
 from linkml.validator.validation_context import ValidationContext
+
+
+class ValidationResultWithSource(NamedTuple):
+    result: ValidationResult
+    source: Any  # The source from which the `ValidationResult` was generated
 
 
 class ValidationPlugin(ABC):
@@ -30,7 +35,7 @@ class ValidationPlugin(ABC):
         pass
 
     @abstractmethod
-    def process(self, instance: dict, context: ValidationContext) -> Iterator[ValidationResult]:
+    def process(self, instance: dict, context: ValidationContext) -> Iterator[ValidationResultWithSource]:
         """Lazily yield validation results for an instance according to
         the validation context.
 
@@ -39,6 +44,6 @@ class ValidationPlugin(ABC):
             access to the schema, target class, and artifacts generated
             from the schema
         :return: Iterator over validation results
-        :rtype: Iterator[ValidationResult]
+        :rtype: Iterator[ValidationResultWithSource]
         """
         pass
