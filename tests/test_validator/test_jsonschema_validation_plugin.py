@@ -59,7 +59,7 @@ def test_path_override(validation_context, tmp_file_factory):
     # with the cached json schema path provided, we're *not* validating against personinfo anymore
     invalid_instance = {"id": "1", "full_name": "Person One"}
     result_iter = plugin.process(invalid_instance, validation_context)
-    message = next(result_iter).message
+    message = next(result_iter).result.message
     assert "required property" in message
     assert "a" in message
 
