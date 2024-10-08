@@ -98,7 +98,7 @@ def test_include_range_class_descendants():
 
     results = list(plugin.process({"thing": {"a": "1", "b": "2"}}, validation_context))
     assert len(results) == 1
-    assert "'b' was unexpected" in results[0].message
+    assert "'b' was unexpected" in results[0].result.message
 
 
 @pytest.mark.parametrize("closed", [True, False])
