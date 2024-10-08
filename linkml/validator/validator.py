@@ -9,7 +9,7 @@ from linkml.validator.loaders import Loader
 from linkml.validator.loaders.passthrough_loader import PassthroughLoader
 from linkml.validator.plugins import ValidationPlugin
 from linkml.validator.plugins.validation_plugin import ValidationResultWithSource
-from linkml.validator.report import Severity, ValidationReport, ValidationResult
+from linkml.validator.report import Severity, ValidationReport
 from linkml.validator.validation_context import ValidationContext
 
 
@@ -68,7 +68,7 @@ class Validator:
         """
         return ValidationReport(results=list(self.iter_results_from_source(loader, target_class)))
 
-    def iter_results(self, instance: Any, target_class: Optional[str] = None) -> Iterator[ValidationResult]:
+    def iter_results(self, instance: Any, target_class: Optional[str] = None) -> Iterator[ValidationResultWithSource]:
         """Lazily yield validation results for the given instance
 
         :param instance: The instance to validate
@@ -76,7 +76,7 @@ class Validator:
             against. If ``None``, the class will be inferred from the schema by
             looked for a class with ``tree_root: true``. Defaults to ``None``.
         :return: Iterator over validation results
-        :rtype: Iterator[ValidationResult]
+        :rtype: Iterator[ValidationResultWithSource]
         """
         loader = PassthroughLoader(iter([instance]))
         yield from self.iter_results_from_source(loader, target_class)
